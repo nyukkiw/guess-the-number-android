@@ -49,42 +49,94 @@ class MainActivity : AppCompatActivity() {
         tombolMainLagi = findViewById(R.id.btnMainLagi)
 
         // TODO 1: Saat tombolTebak diklik, jalankan fungsi prosesTebakan().
+        tombolTebak.setOnClickListener {
+            prosesTebakan()
+        }
+
         // TODO 2: Saat tombolMainLagi diklik, jalankan fungsi mulaiGameBaru().
+        tombolMainLagi.setOnClickListener {
+            mulaiGameBaru()
+        }
+
         // TODO 3: Jalankan mulaiGameBaru() sekali di sini supaya game langsung siap.
+        mulaiGameBaru()
     }
 
     private fun mulaiGameBaru() {
         // TODO 4: Acak angkaRahasia antara angkaTerkecil sampai angkaTerbesar.
         //         Petunjuk: (angkaTerkecil..angkaTerbesar).random()
+        angkaRahasia = (angkaTerkecil..angkaTerbesar).random()
+
         // TODO 5: Kembalikan skorSekarang ke skorAwal, lalu tampilkan di teksSkor
         //         dengan format "Skor: 100".
+        skorSekarang = skorAwal
+        teksSkor.text = "Skor: $skorSekarang"
+
         // TODO 6: Ubah teksPetunjuk jadi "Silakan mulai menebak!" dan kosongkan kolomTebakan.
+        teksPetunjuk.text = "Silakan mulai menebak!"
+        kolomTebakan.text.clear()
+
         // TODO 7: Aktifkan kolomTebakan dan tombolTebak (isEnabled = true).
+        kolomTebakan.isEnabled = true
+        tombolTebak.isEnabled = true
+
         // TODO 8: Sembunyikan tombolMainLagi (visibility = View.GONE).
+        tombolMainLagi.visibility = View.GONE
     }
 
     private fun prosesTebakan() {
         // TODO 9: Ambil isi kolomTebakan lalu ubah jadi angka.
         //         Petunjuk: kolomTebakan.text.toString().toIntOrNull()
         //         (hasilnya null kalau kolom kosong)
+        val tebakan = kolomTebakan.text.toString().trim().toIntOrNull()
+
         // TODO 10: CEK INPUT. Kalau kosong atau di luar angkaTerkecil..angkaTerbesar,
         //          tampilkan "Masukkan angka 0 sampai 100!" di teksPetunjuk lalu berhenti
         //          (return). Skor TIDAK boleh berkurang di kasus ini.
+        if (tebakan == null || tebakan !in angkaTerkecil..angkaTerbesar) {
+            teksPetunjuk.text = "Masukkan angka 0 sampai 100!"
+            return
+        }
+
         // TODO 11: Kalau tebakan SAMA dengan angkaRahasia, pemain MENANG:
         //          tampilkan pesan menang beserta skor, lalu jalankan akhiriGame().
-        // TODO 12: Kalau tebakan SALAH, kurangi skorSekarang sebanyak
-        //          skorBerkurangSetiapSalah, lalu perbarui teksSkor.
-        // TODO 13: Beri petunjuk di teksPetunjuk:
-        //          "Terlalu besar!" kalau tebakan lebih besar dari angkaRahasia,
-        //          "Terlalu kecil!" kalau lebih kecil.
-        // TODO 14: Kalau skorSekarang sudah 0, pemain KALAH: tampilkan
-        //          "Kalah! Angkanya adalah ..." (isi dengan angkaRahasia),
-        //          lalu jalankan akhiriGame().
+        if (tebakan == angkaRahasia) {
+            teksPetunjuk.text = "Tebakan benar! Skor: $skorSekarang"
+            akhiriGame()
+        } else {
+            // TODO 12: Kalau tebakan SALAH, kurangi skorSekarang sebanyak
+            //          skorBerkurangSetiapSalah, lalu perbarui teksSkor.
+            skorSekarang = maxOf(0, skorSekarang - skorBerkurangSetiapSalah)
+            teksSkor.text = "Skor: $skorSekarang"
+
+            // TODO 13: Beri petunjuk di teksPetunjuk:
+            //          "Terlalu besar!" kalau tebakan lebih besar dari angkaRahasia,
+            //          "Terlalu kecil!" kalau lebih kecil.
+            if (tebakan > angkaRahasia) {
+                teksPetunjuk.text = "Terlalu besar!"
+            } else {
+                teksPetunjuk.text = "Terlalu kecil!"
+            }
+
+            // TODO 14: Kalau skorSekarang sudah 0, pemain KALAH: tampilkan
+            //          "Kalah! Angkanya adalah ..." (isi dengan angkaRahasia),
+            //          lalu jalankan akhiriGame().
+            if (skorSekarang <= 0) {
+                teksPetunjuk.text = "Kalah! Angkanya adalah $angkaRahasia"
+                akhiriGame()
+            }
+        }
+
         // TODO 15: Kosongkan kolomTebakan setelah setiap tebakan.
+        kolomTebakan.text.clear()
     }
 
     private fun akhiriGame() {
         // TODO 16: Matikan kolomTebakan dan tombolTebak (isEnabled = false).
+        kolomTebakan.isEnabled = false
+        tombolTebak.isEnabled = false
+
         // TODO 17: Munculkan tombolMainLagi (visibility = View.VISIBLE).
+        tombolMainLagi.visibility = View.VISIBLE
     }
 }
